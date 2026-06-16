@@ -1,0 +1,1050 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MERNVerse 2026 — PVPSIT Hackathon Timer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg-overlay: rgba(0,0,0,0.35);
+    --pearl-white: #F8FAFC;
+    --rose-gold: #E8BFA5;
+    --lavender-mist: #C8B6FF;
+    --golden-amber: #FFC76B;
+    --warm-coral: #FF8E72;
+    --glass-bg: rgba(255,255,255,0.08);
+    --glass-border: rgba(255,255,255,0.18);
+    --glass-shadow:
+      0 30px 80px rgba(0,0,0,0.35),
+      0 8px 30px rgba(255,255,255,0.05);
+    --lavender-glow:
+      0 0 20px rgba(200,182,255,0.25),
+      0 0 40px rgba(200,182,255,0.15);
+  }
+
+  html, body {
+    height: 100%;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    color: var(--pearl-white);
+    background:
+      linear-gradient(var(--bg-overlay), var(--bg-overlay)),
+      url('./backgroung.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+  }
+
+  /* Main wrapper */
+  .wrapper {
+    position: relative;
+    z-index: 2;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px 16px;
+  }
+
+  /* Card */
+  .card {
+    background: var(--glass-bg);
+    backdrop-filter: blur(40px) saturate(180%);
+    -webkit-backdrop-filter: blur(40px) saturate(180%);
+    border: 1px solid var(--glass-border);
+    border-radius: 32px;
+    box-shadow: var(--glass-shadow);
+    padding: 40px 52px 44px;
+    max-width: 780px;
+    width: 100%;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    animation: card-fade-in 1s ease-out;
+  }
+
+  @keyframes card-fade-in {
+    from { opacity: 0; transform: translateY(20px) scale(0.98); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  /* Internal glass reflection */
+  .card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(
+        135deg,
+        rgba(255,255,255,0.15),
+        rgba(255,255,255,0.02) 40%,
+        transparent 60%
+      );
+    pointer-events: none;
+    border-radius: 32px;
+  }
+
+  /* ── Header / Logo Row ── */
+  .logo-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 14px;
+  }
+
+  .logo-block {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-align: left;
+  }
+
+  .institute-sub {
+    font-size: 30px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    color: var(--rose-gold);
+    text-transform: uppercase;
+    margin-bottom: 2px;
+  }
+  .institute-name {
+    font-size: 30px;
+    font-weight: 700;
+    color: var(--pearl-white);
+    line-height: 1.25;
+  }
+  .institute-loc {
+    font-size: 11px;
+    color: rgba(200,182,255,0.7);
+    font-weight: 500;
+    margin-top: 2px;
+  }
+
+  /* NAAC badge on right */
+  .badge-cluster {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 4px;
+    flex-shrink: 0;
+  }
+  .badge-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: rgba(255,255,255,0.06);
+    color: var(--rose-gold);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    border-radius: 20px;
+    padding: 4px 10px;
+    border: 1px solid rgba(255,255,255,0.12);
+  }
+  .badge-pill.flame { background: rgba(200,182,255,0.1); color: var(--lavender-mist); border-color: rgba(200,182,255,0.2); }
+  .badge-pill.earth { background: rgba(232,191,165,0.1); color: var(--rose-gold); border-color: rgba(232,191,165,0.2); }
+
+  /* ── Divider ── */
+  .divider {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 12px 0;
+    opacity: 0.4;
+  }
+  .divider::before, .divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+  }
+  .divider-diamond {
+    width: 6px; height: 6px;
+    background: var(--rose-gold);
+    transform: rotate(45deg);
+    flex-shrink: 0;
+    opacity: 0.6;
+  }
+
+  /* ── Event Title Block ── */
+  .event-eyebrow {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.25em;
+    color: var(--lavender-mist);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    font-family: 'Inter', sans-serif;
+  }
+  .event-name {
+    font-family: 'Inter', sans-serif;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    font-size: clamp(32px, 5vw, 54px);
+    line-height: 1.1;
+    margin-bottom: 6px;
+  }
+  .event-name .mern { color: var(--rose-gold); }
+  .event-name .verse { color: var(--pearl-white); text-shadow: var(--lavender-glow); }
+
+  .event-stack {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    color: rgba(200,182,255,0.6);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .branches {
+    display: inline-flex;
+    gap: 10px;
+    align-items: center;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 30px;
+    padding: 5px 18px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--pearl-white);
+    margin-bottom: 14px;
+  }
+  .branches span { opacity: 0.35; }
+
+  /* ── Phase badge ── */
+  .phase-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 20px;
+    padding: 4px 14px;
+    font-size: 11.5px;
+    font-weight: 600;
+    color: var(--pearl-white);
+    margin-bottom: 12px;
+    opacity: 0;
+    transform: translateY(5px);
+    transition: all 0.3s ease;
+  }
+  .phase-badge.visible { opacity: 1; transform: translateY(0); }
+  .phase-dot { width: 7px; height: 7px; border-radius: 50%; background: #22c55e; animation: dot-pulse 1.5s ease infinite; }
+  .phase-dot.warning { background: var(--golden-amber); }
+  .phase-dot.critical { background: var(--warm-coral); }
+  @keyframes dot-pulse {
+    0%,100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.35); opacity: 0.65; }
+  }
+
+  /* ── Input section ── */
+  .input-section { margin-bottom: 14px; }
+  .input-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.22em;
+    color: var(--pearl-white);
+    opacity: 0.55;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .time-inputs {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 16px;
+    padding: 10px 20px;
+    box-shadow: inset 0 2px 8px rgba(0,0,0,0.15);
+    backdrop-filter: blur(20px);
+    max-width: 340px;
+    margin: 0 auto;
+  }
+  .time-inputs input {
+    width: 60px;
+    background: transparent;
+    border: none;
+    outline: none;
+    font-family: 'Inter', sans-serif;
+    font-size: 30px;
+    font-weight: 700;
+    color: var(--pearl-white);
+    text-align: center;
+    -moz-appearance: textfield;
+  }
+  .time-inputs input::-webkit-outer-spin-button,
+  .time-inputs input::-webkit-inner-spin-button { -webkit-appearance: none; }
+  .time-inputs input::placeholder { color: rgba(248,250,252,0.22); }
+  .time-inputs input:focus { color: var(--lavender-mist); }
+  .time-sep {
+    font-family: 'Inter', sans-serif;
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--rose-gold);
+    padding: 0 2px;
+    line-height: 1;
+    user-select: none;
+  }
+  .time-units {
+    display: flex;
+    justify-content: center;
+    gap: 0;
+    margin: 3px auto 0;
+    max-width: 340px;
+  }
+  .unit-label {
+    width: 72px;
+    font-size: 9.5px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    color: var(--pearl-white);
+    opacity: 0.4;
+    text-transform: uppercase;
+    text-align: center;
+  }
+  .unit-sep { width: 14px; }
+
+  /* ── Clock section ── */
+  .clock-section {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 24px;
+    padding: 32px 40px 24px;
+    margin-bottom: 24px;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.06);
+    position: relative;
+    overflow: hidden;
+    backdrop-filter: blur(20px);
+  }
+  .clock-section::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(200,182,255,0.04) 0%, transparent 50%);
+    pointer-events: none;
+  }
+  .clock-display {
+    font-family: 'Inter', sans-serif;
+    font-size: clamp(72px, 10vw, 130px);
+    font-weight: 800;
+    letter-spacing: -0.05em;
+    color: var(--pearl-white);
+    line-height: 1;
+    text-shadow: var(--lavender-glow);
+    transition: color 0.4s ease, text-shadow 0.4s ease;
+    position: relative;
+    z-index: 1;
+  }
+  .clock-display.warning {
+    color: var(--golden-amber);
+    text-shadow: 0 0 20px rgba(255,199,107,0.35);
+  }
+  .clock-display.critical {
+    color: var(--warm-coral);
+    text-shadow: 0 0 30px rgba(255,142,114,0.45);
+    animation: soft-pulse 1.5s ease-in-out infinite;
+  }
+  @keyframes soft-pulse {
+    0%,100% { opacity: 1; }
+    50% { opacity: 0.7; }
+  }
+  .seg-sep {
+    color: var(--rose-gold);
+    animation: sep-pulse 1s step-start infinite;
+    display: inline-block;
+  }
+  .seg-sep.paused { animation: none; opacity: 1; }
+  @keyframes sep-pulse {
+    0%,100% { opacity: 1; }
+    50% { opacity: 0.15; }
+  }
+  .clock-sub {
+    display: flex;
+    justify-content: center;
+    gap: 0;
+    margin-top: 10px;
+    position: relative;
+    z-index: 1;
+  }
+  .clock-sub-item {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.22em;
+    color: var(--pearl-white);
+    opacity: 0.38;
+    text-transform: uppercase;
+  }
+  .clock-sub-sep { width: 1px; background: rgba(255,255,255,0.1); margin: 0 22px; }
+
+  /* ── Buttons ── */
+  .btn-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    flex-wrap: wrap;
+  }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 13px 32px;
+    border-radius: 16px;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.15);
+    backdrop-filter: blur(20px);
+    transition: all 0.3s ease;
+    outline: none;
+    font-family: 'Inter', sans-serif;
+    cursor: pointer;
+  }
+  .btn:active { transform: scale(0.97); }
+  .btn:hover {
+    transform: translateY(-3px);
+    background: rgba(255,255,255,0.12);
+    box-shadow: 0 15px 30px rgba(0,0,0,0.25);
+  }
+  .btn-clear {
+    color: var(--pearl-white);
+  }
+  .btn-clear:hover { color: var(--pearl-white); }
+  .btn-start {
+    color: var(--lavender-mist);
+    border-color: rgba(200,182,255,0.25);
+  }
+  .btn-start:hover { border-color: rgba(200,182,255,0.4); box-shadow: 0 15px 30px rgba(0,0,0,0.25), 0 0 20px rgba(200,182,255,0.15); }
+  .btn-restart {
+    color: var(--rose-gold);
+    border-color: rgba(232,191,165,0.25);
+  }
+  .btn-restart:hover { border-color: rgba(232,191,165,0.4); box-shadow: 0 15px 30px rgba(0,0,0,0.25), 0 0 20px rgba(232,191,165,0.15); }
+  .btn-stop {
+    color: var(--warm-coral);
+    border-color: rgba(255,142,114,0.25);
+  }
+  .btn-stop:hover { border-color: rgba(255,142,114,0.4); box-shadow: 0 15px 30px rgba(0,0,0,0.25), 0 0 20px rgba(255,142,114,0.15); }
+  .btn-icon { font-size: 14px; }
+
+  /* ── CELEBRATION OVERLAY ── */
+  #celebration {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    background: rgba(5,8,18,0.88);
+    backdrop-filter: blur(6px);
+  }
+  #celebration.active { display: flex; }
+
+  /* Sparkling star animation */
+  .cel-stars {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    overflow: hidden;
+  }
+
+  .cel-content {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    animation: cel-pop 0.65s cubic-bezier(0.34,1.56,0.64,1);
+    max-width: 640px;
+    width: 90%;
+    padding: 40px 32px;
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 32px;
+    backdrop-filter: blur(40px) saturate(180%);
+    box-shadow: var(--glass-shadow);
+  }
+  @keyframes cel-pop {
+    from { transform: scale(0.4); opacity: 0; }
+    to   { transform: scale(1); opacity: 1; }
+  }
+
+  /* Trophy row */
+  .cel-trophy-row {
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+  .cel-trophy {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+  }
+  .cel-trophy .trophy-icon { font-size: 56px; animation: trophy-bounce 1.4s ease infinite; }
+  .cel-trophy.silver .trophy-icon { font-size: 44px; animation-delay: 0.2s; }
+  .cel-trophy.bronze .trophy-icon { font-size: 38px; animation-delay: 0.4s; }
+  @keyframes trophy-bounce {
+    0%,100% { transform: translateY(0) scale(1); }
+    50% { transform: translateY(-8px) scale(1.08); }
+  }
+  .trophy-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--pearl-white);
+    opacity: 0.7;
+  }
+
+  /* Sparkle icons scattered */
+  .cel-sparkles {
+    font-size: 22px;
+    margin-bottom: 10px;
+    letter-spacing: 6px;
+    animation: sparkle-pulse 1.2s ease infinite alternate;
+  }
+  @keyframes sparkle-pulse {
+    from { opacity: 0.6; transform: scale(0.95); }
+    to { opacity: 1; transform: scale(1.05); }
+  }
+
+  .cel-title {
+    font-family: 'Inter', sans-serif;
+    font-size: clamp(22px, 5vw, 38px);
+    font-weight: 800;
+    color: var(--pearl-white);
+    letter-spacing: -0.02em;
+    margin-bottom: 6px;
+  }
+  .cel-title span { color: var(--rose-gold); }
+
+  .cel-sub {
+    font-size: 15px;
+    font-weight: 500;
+    color: rgba(248,250,252,0.80);
+    margin-bottom: 12px;
+    line-height: 1.5;
+  }
+
+  .cel-badges {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 24px;
+  }
+  .cel-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.22);
+    border-radius: 20px;
+    padding: 5px 14px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--pearl-white);
+    letter-spacing: 0.08em;
+  }
+
+  .cel-close {
+    background: rgba(255,255,255,0.08);
+    color: var(--pearl-white);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 16px;
+    padding: 12px 36px;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    font-family: 'Inter', sans-serif;
+    backdrop-filter: blur(20px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+    transition: all 0.3s;
+    cursor: pointer;
+  }
+  .cel-close:hover { transform: translateY(-3px); background: rgba(255,255,255,0.12); box-shadow: 0 15px 30px rgba(0,0,0,0.3); }
+
+  /* Canvas */
+  #sparks-canvas {
+    position: fixed;
+    inset: 0;
+    z-index: 9998;
+    pointer-events: none;
+    display: none;
+  }
+  #sparks-canvas.active { display: block; }
+
+  /* Responsive */
+  @media (max-width: 600px) {
+    .card { padding: 24px 18px 28px; border-radius: 24px; }
+    .logo-row { flex-direction: column; align-items: center; }
+    .logo-block { flex-direction: column; text-align: center; }
+    .institute-text { text-align: center; }
+    .badge-cluster { align-items: center; }
+    .institute-name { font-size: 13px; }
+    .clock-section { padding: 20px 16px 16px; border-radius: 18px; }
+    .time-inputs input { width: 48px; font-size: 24px; }
+    .time-sep { font-size: 20px; }
+  }
+
+
+  .hidden { display: none !important; }
+</style>
+</head>
+<body>
+
+<!-- Confetti canvas (behind celebration) -->
+<canvas id="sparks-canvas"></canvas>
+
+<!-- CELEBRATION OVERLAY -->
+<div id="celebration">
+  <!-- Animated sparkles background -->
+  <div class="cel-stars" id="cel-stars"></div>
+
+  <div class="cel-content">
+    <!-- Trophy podium -->
+    <div class="cel-trophy-row">
+      <div class="cel-trophy silver">
+        <div class="trophy-icon">🥈</div>
+        <div class="trophy-label">Runner Up</div>
+      </div>
+      <div class="cel-trophy gold">
+        <div class="trophy-icon">🏆</div>
+        <div class="trophy-label">Champions</div>
+      </div>
+      <div class="cel-trophy bronze">
+        <div class="trophy-icon">🥉</div>
+        <div class="trophy-label">3rd Place</div>
+      </div>
+    </div>
+
+    <div class="cel-sparkles">✨ 🎊 ⭐ 🎉 ✨</div>
+
+    <div class="cel-title">HACKATHON <span>COMPLETED!</span></div>
+    <div class="cel-sub">
+      Congratulations to all participants of<br>
+      <strong style="color:var(--pearl-white);">MERNVerse 2026</strong> — PVPSIT
+    </div>
+
+    <div class="cel-badges">
+      <div class="cel-badge">🎓 PVPSIT</div>
+      <div class="cel-badge">⚡ MERN Stack</div>
+      <div class="cel-badge">🤖 AI &amp; ML</div>
+      <div class="cel-badge">📊 Data Science</div>
+      <div class="cel-badge">🏅 24 Hours</div>
+    </div>
+
+    <button class="cel-close" onclick="closeCelebration()">
+      🎯 &nbsp; Close &amp; Reset
+    </button>
+  </div>
+</div>
+
+<!-- Main card -->
+<div class="wrapper">
+  <div class="card">
+
+    <!-- Header: Logo + Institute + Badges -->
+    <div class="logo-row">
+      <div class="logo-block">
+        <div class="institute-text">
+          <div class="institute-sub">Prasad V. Potluri</div>
+          <div class="institute-name">Siddhartha Institute of Technology</div>
+          <div class="institute-loc">Vijayawada, Andhra Pradesh · NAAC A+</div>
+        </div>
+      </div>
+      <div class="badge-cluster">
+        <div class="badge-pill">NAAC A+</div>
+        <div class="badge-pill earth">NBA Accredited</div>
+        <div class="badge-pill flame">NIRF 2025</div>
+      </div>
+    </div>
+
+    <div class="divider"><div class="divider-diamond"></div></div>
+
+    <!-- Event title -->
+    <div class="event-eyebrow">Hackathon 2026</div>
+    <div class="event-name"><span class="mern">MERN</span><span class="verse">Verse</span> 2026</div>
+    <div class="event-stack">Full-Stack Web Development · MERN Stack</div>
+    <div class="branches">
+      CSE (AI &amp; ML) <span>•</span> CSE (Data Science)
+    </div>
+
+    <div class="divider"><div class="divider-diamond"></div></div>
+
+    <!-- Phase badge -->
+    <div class="phase-badge" id="phase-badge">
+      <div class="phase-dot" id="phase-dot"></div>
+      <span id="phase-text">Hackathon Running</span>
+    </div>
+
+    <!-- Input section -->
+    <div class="input-section" id="input-section">
+      <div class="input-label">Set Timer Duration</div>
+      <div class="time-inputs">
+        <input type="number" id="inp-hh" placeholder="00" min="0" max="99" value="24">
+        <span class="time-sep">:</span>
+        <input type="number" id="inp-mm" placeholder="00" min="0" max="59" value="00">
+        <span class="time-sep">:</span>
+        <input type="number" id="inp-ss" placeholder="00" min="0" max="59" value="00">
+      </div>
+      <div class="time-units">
+        <div class="unit-label">Hours</div>
+        <div class="unit-sep"></div>
+        <div class="unit-label">Minutes</div>
+        <div class="unit-sep"></div>
+        <div class="unit-label">Seconds</div>
+      </div>
+    </div>
+
+    <!-- Clock display -->
+    <div class="clock-section">
+      <div class="clock-display" id="clock">
+        <span id="d-hh">24</span><span class="seg-sep paused" id="sep1">:</span><span id="d-mm">00</span><span class="seg-sep paused" id="sep2">:</span><span id="d-ss">00</span>
+      </div>
+      <div class="clock-sub">
+        <div class="clock-sub-item">Hours</div>
+        <div class="clock-sub-sep"></div>
+        <div class="clock-sub-item">Minutes</div>
+        <div class="clock-sub-sep"></div>
+        <div class="clock-sub-item">Seconds</div>
+      </div>
+    </div>
+
+    <!-- Buttons -->
+    <div class="btn-row" id="btn-row-input">
+      <button class="btn btn-clear" onclick="clearTimer()">
+        <span class="btn-icon">✕</span> Clear
+      </button>
+      <button class="btn btn-start" onclick="startTimer()">
+        <span class="btn-icon">▶</span> Start
+      </button>
+    </div>
+
+    <div class="btn-row hidden" id="btn-row-running">
+      <button class="btn btn-restart" onclick="restartTimer()">
+        <span class="btn-icon">↺</span> Restart
+      </button>
+      <button class="btn btn-stop" onclick="stopTimer()">
+        <span class="btn-icon">■</span> Stop
+      </button>
+    </div>
+
+  </div>
+</div>
+
+<script>
+// ── State ──────────────────────────────────────────────────────
+let totalSeconds = 0;
+let remainingSeconds = 0;
+let intervalId = null;
+let isRunning = false;
+
+// ── DOM refs ───────────────────────────────────────────────────
+const dHH  = document.getElementById('d-hh');
+const dMM  = document.getElementById('d-mm');
+const dSS  = document.getElementById('d-ss');
+const sep1 = document.getElementById('sep1');
+const sep2 = document.getElementById('sep2');
+const clock       = document.getElementById('clock');
+const inputSec    = document.getElementById('input-section');
+const btnInput    = document.getElementById('btn-row-input');
+const btnRunning  = document.getElementById('btn-row-running');
+const phaseBadge  = document.getElementById('phase-badge');
+const phaseText   = document.getElementById('phase-text');
+const phaseDot    = document.getElementById('phase-dot');
+const inpHH = document.getElementById('inp-hh');
+const inpMM = document.getElementById('inp-mm');
+const inpSS = document.getElementById('inp-ss');
+
+function pad(n) { return String(n).padStart(2, '0'); }
+
+function updateDisplay(sec) {
+  const h = Math.floor(sec / 3600);
+  const m = Math.floor((sec % 3600) / 60);
+  const s = sec % 60;
+  dHH.textContent = pad(h);
+  dMM.textContent = pad(m);
+  dSS.textContent = pad(s);
+
+  if (sec <= 60 && isRunning) {
+    clock.classList.remove('warning');
+    clock.classList.add('critical');
+    phaseDot.classList.remove('warning');
+    phaseDot.classList.add('critical');
+    phaseText.textContent = 'Last Minute — Time Critical!';
+  } else if (sec <= 300 && isRunning) {
+    clock.classList.add('warning');
+    clock.classList.remove('critical');
+    phaseDot.classList.add('warning');
+    phaseDot.classList.remove('critical');
+    phaseText.textContent = 'Final 5 Minutes';
+  } else {
+    clock.classList.remove('warning', 'critical');
+    phaseDot.classList.remove('warning', 'critical');
+    if (isRunning) phaseText.textContent = 'Hackathon Running';
+  }
+}
+
+function readInputs() {
+  const h = parseInt(inpHH.value) || 0;
+  const m = parseInt(inpMM.value) || 0;
+  const s = parseInt(inpSS.value) || 0;
+  return h * 3600 + m * 60 + s;
+}
+
+[inpHH, inpMM, inpSS].forEach(inp => {
+  inp.addEventListener('input', () => {
+    if (!isRunning) updateDisplay(readInputs());
+  });
+});
+
+function clearTimer() {
+  stopTimer(true);
+  inpHH.value = '00'; inpMM.value = '00'; inpSS.value = '00';
+  totalSeconds = 0; remainingSeconds = 0;
+  updateDisplay(0);
+  showInputButtons();
+  hidePhaseBadge();
+}
+
+function startTimer() {
+  const sec = readInputs();
+  if (sec <= 0) { inpHH.focus(); return; }
+  totalSeconds = sec;
+  remainingSeconds = sec;
+  beginCountdown();
+}
+
+function beginCountdown() {
+  isRunning = true;
+  showRunningButtons();
+  showPhaseBadge();
+  updateDisplay(remainingSeconds);
+  sep1.classList.remove('paused');
+  sep2.classList.remove('paused');
+
+  intervalId = setInterval(() => {
+    remainingSeconds--;
+    if (remainingSeconds < 0) {
+      remainingSeconds = 0;
+      updateDisplay(0);
+      clearInterval(intervalId);
+      isRunning = false;
+      celebrate();
+      return;
+    }
+    updateDisplay(remainingSeconds);
+  }, 1000);
+}
+
+function stopTimer(silent) {
+  if (intervalId) { clearInterval(intervalId); intervalId = null; }
+  isRunning = false;
+  sep1.classList.add('paused');
+  sep2.classList.add('paused');
+  clock.classList.remove('warning', 'critical');
+  if (!silent) {
+    showInputButtons();
+    hidePhaseBadge();
+    const h = Math.floor(remainingSeconds / 3600);
+    const m = Math.floor((remainingSeconds % 3600) / 60);
+    const s = remainingSeconds % 60;
+    inpHH.value = pad(h); inpMM.value = pad(m); inpSS.value = pad(s);
+  }
+}
+
+function restartTimer() {
+  if (intervalId) { clearInterval(intervalId); intervalId = null; }
+  isRunning = false;
+  remainingSeconds = totalSeconds;
+  clock.classList.remove('warning', 'critical');
+  phaseDot.classList.remove('warning', 'critical');
+  phaseText.textContent = 'Hackathon Running';
+  beginCountdown();
+}
+
+function showInputButtons() {
+  btnInput.classList.remove('hidden');
+  btnRunning.classList.add('hidden');
+  inputSec.classList.remove('hidden');
+}
+function showRunningButtons() {
+  btnRunning.classList.remove('hidden');
+  btnInput.classList.add('hidden');
+  inputSec.classList.add('hidden');
+}
+function showPhaseBadge() { phaseBadge.classList.add('visible'); }
+function hidePhaseBadge() { phaseBadge.classList.remove('visible'); }
+
+// ── Celebration ────────────────────────────────────────────────
+const canvas   = document.getElementById('sparks-canvas');
+const celebEl  = document.getElementById('celebration');
+const ctx      = canvas.getContext('2d');
+let particles  = [];
+let animFrame  = null;
+
+// Use the palette colors for confetti
+const COLORS = ['#F8FAFC','#E8BFA5','#C8B6FF','#FFC76B','#FF8E72','#ffffff','#ddd6fe','#fecdd3'];
+
+function randomBetween(a, b) { return a + Math.random() * (b - a); }
+
+function spawnParticles() {
+  canvas.width  = window.innerWidth;
+  canvas.height = window.innerHeight;
+  particles = [];
+  for (let i = 0; i < 320; i++) {
+    particles.push({
+      x: randomBetween(0, canvas.width),
+      y: randomBetween(-260, -10),
+      vx: randomBetween(-3.5, 3.5),
+      vy: randomBetween(2.5, 7.5),
+      size: randomBetween(5, 15),
+      color: COLORS[Math.floor(Math.random() * COLORS.length)],
+      rotation: randomBetween(0, Math.PI * 2),
+      rotationSpeed: randomBetween(-0.18, 0.18),
+      shape: ['rect','circle','star','diamond'][Math.floor(Math.random()*4)],
+      alpha: 1,
+      gravity: randomBetween(0.06, 0.18),
+    });
+  }
+}
+
+function drawStar(ctx, r) {
+  ctx.beginPath();
+  for (let i = 0; i < 5; i++) {
+    const a = (i * Math.PI * 2) / 5 - Math.PI / 2;
+    const x = Math.cos(a) * r;
+    const y = Math.sin(a) * r;
+    if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+    const ia = a + Math.PI / 5;
+    ctx.lineTo(Math.cos(ia) * r * 0.45, Math.sin(ia) * r * 0.45);
+  }
+  ctx.closePath();
+  ctx.fill();
+}
+
+function animateParticles() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  let alive = false;
+  for (const p of particles) {
+    p.x  += p.vx;
+    p.y  += p.vy;
+    p.vy += p.gravity;
+    p.rotation += p.rotationSpeed;
+    if (p.y < canvas.height + 20) alive = true;
+    if (p.y > canvas.height - 80) p.alpha -= 0.025;
+    if (p.alpha <= 0) continue;
+
+    ctx.save();
+    ctx.globalAlpha = Math.max(0, p.alpha);
+    ctx.translate(p.x, p.y);
+    ctx.rotate(p.rotation);
+    ctx.fillStyle = p.color;
+
+    if (p.shape === 'rect') {
+      ctx.fillRect(-p.size / 2, -p.size / 4, p.size, p.size / 2);
+    } else if (p.shape === 'circle') {
+      ctx.beginPath(); ctx.arc(0, 0, p.size / 2, 0, Math.PI * 2); ctx.fill();
+    } else if (p.shape === 'star') {
+      drawStar(ctx, p.size / 2);
+    } else {
+      // diamond
+      ctx.beginPath();
+      ctx.moveTo(0, -p.size / 2);
+      ctx.lineTo(p.size / 3, 0);
+      ctx.lineTo(0, p.size / 2);
+      ctx.lineTo(-p.size / 3, 0);
+      ctx.closePath(); ctx.fill();
+    }
+    ctx.restore();
+  }
+
+  if (alive) {
+    animFrame = requestAnimationFrame(animateParticles);
+  } else {
+    spawnParticles();
+    animFrame = requestAnimationFrame(animateParticles);
+  }
+}
+
+// Sparkle star elements inside celebration overlay
+function spawnCelStars() {
+  const container = document.getElementById('cel-stars');
+  container.innerHTML = '';
+  for (let i = 0; i < 30; i++) {
+    const el = document.createElement('div');
+    const size = 8 + Math.random() * 18;
+    el.style.cssText = `
+      position:absolute;
+      left:${Math.random()*100}%;
+      top:${Math.random()*100}%;
+      font-size:${size}px;
+      animation: sparkle-float ${2 + Math.random()*3}s ease-in-out infinite;
+      animation-delay:${Math.random()*2}s;
+      opacity:0.7;
+      pointer-events:none;
+    `;
+    const icons = ['✨','⭐','🌟','💫','🎊','🎉','🏅','🎖️'];
+    el.textContent = icons[Math.floor(Math.random()*icons.length)];
+    container.appendChild(el);
+  }
+}
+
+// Add keyframe for star floating
+const styleEl = document.createElement('style');
+styleEl.textContent = `
+@keyframes sparkle-float {
+  0%,100% { transform: translateY(0) rotate(0deg) scale(1); opacity:0.5; }
+  33% { transform: translateY(-18px) rotate(15deg) scale(1.2); opacity:1; }
+  66% { transform: translateY(-8px) rotate(-10deg) scale(0.9); opacity:0.7; }
+}`;
+document.head.appendChild(styleEl);
+
+function celebrate() {
+  showInputButtons();
+  hidePhaseBadge();
+  canvas.classList.add('active');
+  celebEl.classList.add('active');
+  spawnCelStars();
+  spawnParticles();
+  animFrame = requestAnimationFrame(animateParticles);
+}
+
+function closeCelebration() {
+  celebEl.classList.remove('active');
+  canvas.classList.remove('active');
+  if (animFrame) { cancelAnimationFrame(animFrame); animFrame = null; }
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  inpHH.value = '24'; inpMM.value = '00'; inpSS.value = '00';
+  updateDisplay(24 * 3600);
+}
+
+window.addEventListener('resize', () => {
+  if (canvas.classList.contains('active')) {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+});
+
+updateDisplay(24 * 3600);
+</script>
+</body>
+</html>
